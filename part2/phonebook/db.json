@@ -26,11 +26,6 @@
       "id": 7
     },
     {
-      "name": "John PhoneCase",
-      "number": "12341243",
-      "id": 9
-    },
-    {
       "name": "Chris ThorHammer",
       "number": "1234567",
       "id": 10
@@ -39,6 +34,21 @@
       "name": "Leonardo GoodPerson",
       "number": "3421342",
       "id": 11
+    },
+    {
+      "name": "Jack PencilCase",
+      "number": "333234124",
+      "id": 12
+    },
+    {
+      "name": "Alexa FlowerPot",
+      "number": "1254334",
+      "id": 13
+    },
+    {
+      "name": "Alice InWonderland",
+      "number": "45324",
+      "id": 14
     }
   ]
 }

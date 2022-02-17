@@ -1,35 +1,16 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-
-const Filter = ({ value, onChange }) => <div>Filter shown with <input value={value} onChange={onChange} /></div>
-
-const PersonForm = ({ onSubmit, nameValue, numberValue, nameOnChange, numberOnChange }) => (
-  <form onSubmit={onSubmit}>
-    <div>
-      Name: <input value={nameValue} onChange={nameOnChange} />
-    </div>
-    <div>
-      Number: <input value={numberValue} onChange={numberOnChange} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-)
-
-const Persons = ({ persons, deleteHandler }) => (
-  <div>
-    {persons.map(
-      person => <div key={person.name}>{person.name} {person.number} <button onClick={() => deleteHandler(person.id)}>Delete</button></div>
-    )}
-  </div>
-)
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -38,6 +19,20 @@ const App = () => {
         setPersons(persons)
       })
   }, [])
+
+  const showSuccessNotification = message => {
+    setNotificationMessage({type:'success', text:message})
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000);
+  }
+
+  const showErrorNotification = message => {
+    setNotificationMessage({type:'error', text:message})
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000);
+  }
 
   const changeNumberOf = id => {
     const person = persons.find(p => p.id === id)
@@ -49,6 +44,11 @@ const App = () => {
         setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
         setNewName('')
         setNewNumber('')
+        showSuccessNotification(`Changed number of ${returnedPerson.name}`)
+      })
+      .catch(error => {
+        showErrorNotification(`Information of ${person.name} has already been removed from server`)
+        setPersons(persons.filter(p => p.id !== id))
       })
   }
 
@@ -74,6 +74,7 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        showSuccessNotification(`Added ${returnedPerson.name}`)
       })
   }
 
@@ -113,7 +114,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={notificationMessage} />
       <Filter
         value={searchInput}
         onChange={handleSearchOnChange}
