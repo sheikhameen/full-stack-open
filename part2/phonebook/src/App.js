@@ -47,19 +47,25 @@ const App = () => {
         showSuccessNotification(`Changed number of ${returnedPerson.name}`)
       })
       .catch(error => {
-        showErrorNotification(`Information of ${person.name} has already been removed from server`)
-        setPersons(persons.filter(p => p.id !== id))
+        showErrorNotification(error.response.data.error)
+
+        if (error.response.status === 404) setPersons(persons.filter(p => p.id !== id))
+        // showErrorNotification(`Information of ${person.name} has already been removed from server`)
       })
   }
 
   const addPerson = (event) => {
     event.preventDefault()
 
+    if (newName === '' || newNumber === '') {
+      showErrorNotification('Name or number missing')
+      return
+    }
+
     let person = persons.find(person => person.name === newName)
     if (person) {
       const confirm = window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)
       if (confirm) changeNumberOf(person.id)
-
       return
     }
 
@@ -75,6 +81,10 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         showSuccessNotification(`Added ${returnedPerson.name}`)
+      })
+      .catch(error => {
+        console.log(error.response.data)
+        showErrorNotification(error.response.data.error)
       })
   }
 
