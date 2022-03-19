@@ -15,8 +15,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const user = request.user
 
   if (!body.title || !body.url) {
-    response.status(400).end()
-    return
+    return response.status(400).end()
   }
 
   const blog = new Blog(

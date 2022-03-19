@@ -26,7 +26,7 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
-  logger.error(error.message)
+  logger.error(error)
   next()
 }
 
