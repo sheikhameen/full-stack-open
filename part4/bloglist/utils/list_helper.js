@@ -30,21 +30,33 @@ const mostBlogs = (blogs) => {
   if (blogs.length === 0) return null
 
   const authorBlogsCount = _.countBy(blogs, 'author')
-  const mostBloggedAuthor = Object.keys(authorBlogsCount).reduce((previous, current) => authorBlogsCount[previous] > authorBlogsCount[current] ? previous : current)
+  const mostBloggedAuthor = Object
+    .keys(authorBlogsCount)
+    .reduce((previous, current) =>
+      authorBlogsCount[previous] > authorBlogsCount[current]
+        ? previous
+        : current
+    )
 
   return { author: mostBloggedAuthor, blogs: authorBlogsCount[mostBloggedAuthor] }
 }
 
 const mostLikes = (blogs) => {
   if (blogs.length === 0) return null
-  
+
   const authorTotalLikesCount = {}
   for (const blog of blogs) {
     authorTotalLikesCount[blog.author] = (typeof (authorTotalLikesCount[blog.author]) !== 'undefined')
       ? authorTotalLikesCount[blog.author] + blog.likes
       : blog.likes
   }
-  const mostLikedAuthor = Object.keys(authorTotalLikesCount).reduce((previous, current) => authorTotalLikesCount[previous] > authorTotalLikesCount[current] ? previous : current)
+  const mostLikedAuthor = Object
+    .keys(authorTotalLikesCount)
+    .reduce((previous, current) =>
+      authorTotalLikesCount[previous] > authorTotalLikesCount[current]
+        ? previous
+        : current
+    )
 
   return {
     author: mostLikedAuthor,
