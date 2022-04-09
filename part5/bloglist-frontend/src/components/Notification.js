@@ -1,5 +1,5 @@
 import React from 'react'
-const Notification = ( {message} ) => {
+const Notification = ({ message }) => {
   // Null check
   if (message === null) {
     return null
