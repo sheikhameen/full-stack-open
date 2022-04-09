@@ -81,6 +81,32 @@ const App = () => {
     }
   }
 
+  const likeBlog = async (blog) => {
+    const likedBlog = await blogService.update(blog.id, { ...blog, likes: ++blog.likes, user: blog.user.id })
+    setBlogs(blogs.map(blog => blog.id === likedBlog.id
+      ? likedBlog
+      : blog
+    ))
+  }
+
+  const deleteBlog = async (blog) => {
+    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
+
+    try {
+      const response = await blogService.deleteBlog(blog.id)
+      if (response.status === 204) {
+        // make a copy of blogs (to avoid referenced objects), filter out deleted blog:
+        setBlogs(
+          blogs
+            .map(b => ({ ...b }))
+            .filter(b => b.id !== blog.id)
+        )
+      }
+    } catch (exception) {
+      showErrorNotification('You are not allowed')
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -129,7 +155,7 @@ const App = () => {
         blogs
           .sort((a, b) => b.likes - a.likes)
           .map(blog =>
-            <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} currentUser={user} />)
+            <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog} currentUser={user} />)
       }
     </div>
   )
