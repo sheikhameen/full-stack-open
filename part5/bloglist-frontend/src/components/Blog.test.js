@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('<Blog />', () => {
   let container
+  const likeHandler = jest.fn()
 
   beforeEach(() => {
     const user = { username: 'Test user username', name: 'Test user name' }
@@ -17,7 +18,7 @@ describe('<Blog />', () => {
       user
     }
 
-    container = render(<Blog blog={blog} currentUser={user} />).container
+    container = render(<Blog blog={blog} likeBlog={likeHandler} currentUser={user} />).container
   })
 
   test('renders title and author by default and does not render url and likes by default', () => {
@@ -36,7 +37,14 @@ describe('<Blog />', () => {
 
     const details = container.querySelector('.details')
     expect(details).not.toHaveStyle('display: none')
+  })
 
+  test('ensures like event handler called only as many times as clicked', () => {
+    const button = screen.getByText('like')
+    userEvent.click(button)
+    userEvent.click(button)
+
+    expect(likeHandler.mock.calls).toHaveLength(2)
   })
 
 })
