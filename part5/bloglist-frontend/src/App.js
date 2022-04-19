@@ -116,6 +116,7 @@ const App = () => {
           <div>Username:
             <input
               type="text"
+              id='username'
               name='username'
               value={username}
               onChange={({ target }) => setUsername(target.value)}
@@ -124,6 +125,7 @@ const App = () => {
           <div>Password:
             <input
               type="password"
+              id='password'
               name='password'
               value={password}
               onChange={({ target }) => setPassword(target.value)}

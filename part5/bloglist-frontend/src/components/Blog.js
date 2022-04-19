@@ -25,7 +25,7 @@ const Blog = ({ blog, likeBlog, deleteBlog, currentUser }) => {
       <div className='details' style={showWhenDetailed}>
         {blog.url}
         <br />
-        likes {blog.likes} <button onClick={() => likeBlog(blog)}>like</button>
+        likes <span className='likeCount'>{blog.likes}</span> <button id='like-button' onClick={() => likeBlog(blog)}>like</button>
         <br />
         {blog.user.name}<br />
         {
