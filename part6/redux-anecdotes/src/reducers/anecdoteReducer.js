@@ -34,6 +34,10 @@ const reducer = (state = initialState, action) => {
       return state.map(ogAnec =>
         ogAnec.id !== id ? ogAnec : newAnec
       )
+
+    case 'ADD':
+      return [...state, asObject(action.data.content)]
+      
     default:
       return state
   }
@@ -44,6 +48,15 @@ export const voteAnecdote = (id) => {
     type: 'VOTE',
     data: {
       id
+    }
+  }
+}
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'ADD',
+    data: {
+      content
     }
   }
 }
