@@ -12,7 +12,7 @@ const AnecdoteList = () => {
     dispatch(voteAnecdote(id))
 
     const content = anecdotes.find(a => a.id === id).content
-    dispatch(setNotification(`You voted '${content}'`))
+    dispatch(setNotification(`You voted '${content}'`, 5))
   }
 
   const anecdotesToShow = [...anecdotes].filter(a => a.content.toLowerCase().includes(filter.toLowerCase()))
