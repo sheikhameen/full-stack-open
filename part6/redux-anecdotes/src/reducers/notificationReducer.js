@@ -17,14 +17,20 @@ const notificationSlice = createSlice({
 
 const { newNotification, clearNotification } = notificationSlice.actions
 
-export const setNotification = (message, timeout) => {
+let timeoutId = null
+export const setNotification = (message, timeoutSec) => {
   return dispatch => {
     dispatch(newNotification(message))
-    setTimeout(() => {
-      // if no notification, simply return. no need to clear
-      // or if there's already a timeout, before clearingNotification, clear old timeout
+
+    if (timeoutId) { // if a timeout already exists, clear it
+      clearTimeout(timeoutId)
+    }
+
+    // reset timeoutId
+    timeoutId = setTimeout(() => {
       dispatch(clearNotification())
-    }, timeout * 1000);
+      timeoutId = null // only after timeout expires
+    }, timeoutSec * 1000);
   }
 }
 
