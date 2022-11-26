@@ -71,22 +71,22 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const content = useField('text')
-  const author = useField('text')
-  const info = useField('url')
+  const [contentInput, resetContent] = useField('text')
+  const [authorInput, resetAuthor] = useField('text')
+  const [infoInput, resetInfo] = useField('url')
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content: content.value,
-      author: author.value,
-      info: info.value,
+      content: contentInput.value,
+      author: authorInput.value,
+      info: infoInput.value,
       votes: 0
     })
     navigate('/')
 
-    props.setNotification(`A new anecdote "${content.value}" created!`)
+    props.setNotification(`A new anecdote "${contentInput.value}" created!`)
     setTimeout(() => {
       props.setNotification('')
     }, 5000);
@@ -94,10 +94,11 @@ const CreateNew = (props) => {
 
   const handleReset = (e) => {
     e.preventDefault()
-    content.reset()
-    author.reset()
-    info.reset()
+    resetContent()
+    resetAuthor()
+    resetInfo()
   }
+
 
   return (
     <div>
@@ -105,22 +106,21 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' {...content} />
+          <input name='content' {...contentInput} />
         </div>
         <div>
           author
-          <input name='author' {...author} />
+          <input name='author' {...authorInput} />
         </div>
         <div>
           url for more info
-          <input name='info' {...info} />
+          <input name='info' {...infoInput} />
         </div>
         <button>create</button>
         <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
-
 }
 
 const App = () => {
