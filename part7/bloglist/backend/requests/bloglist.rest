@@ -1,0 +1,16 @@
+GET http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN1cGVybWFuIiwiaWQiOiI2MjMzMDhmMDdhODAwNThjYzcwYzg2MTAiLCJpYXQiOjE2NDc2ODc4MTJ9.abHqaaAOBNZqIltjFO_XI6i9XfCunEmBct7ExqOYMgo
+
+{
+  "title": "askldjfas",
+  "author": "asdfas",
+  "url": "http://www.hooo.com"
+}
+
+###
+DELETE http://localhost:3003/api/blogs/6235add2a1181b623a6b26bd
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN1cGVybWFuIiwiaWQiOiI2MjMzMDhmMDdhODAwNThjYzcwYzg2MTAiLCJpYXQiOjE2NDc2OTU5NjR9.PuZltnc3Z_F-E389LDcvVLTLennTL2b7PDcvVKEBibE
