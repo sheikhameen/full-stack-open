@@ -1,8 +1,12 @@
 import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { likeBlog, deleteBlog } from "../reducers/blogReducer"
 
-const Blog = ({ blog, likeBlog, deleteBlog, currentUser }) => {
+const Blog = ({ blog, currentUser }) => {
+  const dispatch = useDispatch()
+
   const [showDetails, setShowDetails] = useState(false)
-  const showWhenDetailed = { display: showDetails ? "" : "none" }
+  const styleShowWhenDetailed = { display: showDetails ? "" : "none" }
 
   const blogStyle = {
     paddingTop: 10,
@@ -10,6 +14,15 @@ const Blog = ({ blog, likeBlog, deleteBlog, currentUser }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
+  }
+
+  const handleLike = () => {
+    dispatch(likeBlog(blog.id))
+  }
+
+  const handleDelete = () => {
+    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
+    dispatch(deleteBlog(blog.id))
   }
 
   const toggleShowDetails = () => {
@@ -25,18 +38,18 @@ const Blog = ({ blog, likeBlog, deleteBlog, currentUser }) => {
           {showDetails ? "hide" : "view"}
         </button>
       </div>
-      <div className="details" style={showWhenDetailed}>
+      <div className="details" style={styleShowWhenDetailed}>
         {blog.url}
         <br />
         likes <span className="likeCount">{blog.likes}</span>{" "}
-        <button id="like-button" onClick={() => likeBlog(blog)}>
+        <button id="like-button" onClick={handleLike}>
           like
         </button>
         <br />
         {blog.user.name}
         <br />
         {currentUser.username === blog.user.username ? (
-          <button onClick={() => deleteBlog(blog)}>remove</button>
+          <button onClick={handleDelete}>remove</button>
         ) : null}
       </div>
     </div>

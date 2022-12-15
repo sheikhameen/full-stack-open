@@ -1,18 +1,22 @@
 import React from "react"
-const Notification = ({ message }) => {
+import { useSelector } from "react-redux"
+
+const Notification = () => {
+  const notification = useSelector((state) => state.notification)
+
   // Null check
-  if (message === null) {
+  if (notification === null) {
     return null
   }
 
   // Set colors
   let color = null
   let backgroundColor = null
-  if (message.type === "success") {
+  if (notification.type === "success") {
     color = "green"
     backgroundColor = "rgba(50,100,50,0.2)"
   }
-  if (message.type === "error") {
+  if (notification.type === "error") {
     color = "red"
     backgroundColor = "rgba(100,50,50,0.2)"
   }
@@ -28,8 +32,8 @@ const Notification = ({ message }) => {
   }
 
   return (
-    <div className={message.type} style={styles}>
-      {message.text}
+    <div className={notification.type} style={styles}>
+      {notification.text}
     </div>
   )
 }
