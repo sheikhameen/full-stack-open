@@ -4,7 +4,7 @@ import Togglable from "./Togglable"
 import BlogForm from "./BlogForm"
 import Blog from "./Blog"
 
-const Blogs = ({ createBlog, blogFormRef }) => {
+const BlogList = ({ createBlog, blogFormRef }) => {
   const user = useSelector((state) => state.user)
   const blogs = [...useSelector((state) => state.blogs)].sort(
     (a, b) => b.likes - a.likes
@@ -26,4 +26,4 @@ const Blogs = ({ createBlog, blogFormRef }) => {
   )
 }
 
-export default Blogs
+export default BlogList

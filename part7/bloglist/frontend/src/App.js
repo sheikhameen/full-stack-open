@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 
-import Blogs from "./components/Blogs"
+import BlogList from "./components/BlogList"
 import Notification from "./components/Notification"
 
 import { initializeBlogs, createBlog } from "./reducers/blogReducer"
@@ -39,14 +39,14 @@ const App = () => {
   }
 
   // Login form if no user
-  // if (user === null) {
-  //   return (
-  //     <>
-  //       <Notification />
-  //       <LoginForm onLogin={handleLogin} />
-  //     </>
-  //   )
-  // }
+  if (user === null) {
+    return (
+      <>
+        <Notification />
+        <LoginForm onLogin={handleLogin} />
+      </>
+    )
+  }
 
   // Blogs if user exists
   return (
@@ -62,23 +62,9 @@ const App = () => {
 
       <Routes>
         <Route
-          path="/login"
-          element={
-            !user ? (
-              <LoginForm onLogin={handleLogin} />
-            ) : (
-              <Navigate replace to="/" />
-            )
-          }
-        />
-        <Route
           path="/"
           element={
-            user ? (
-              <Blogs createBlog={handleCreateBlog} blogFormRef={blogFormRef} />
-            ) : (
-              <Navigate replace to="/login" />
-            )
+            <BlogList createBlog={handleCreateBlog} blogFormRef={blogFormRef} />
           }
         />
         {/* <Route path="/users" element={ } /> */}
