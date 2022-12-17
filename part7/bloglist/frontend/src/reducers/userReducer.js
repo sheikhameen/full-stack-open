@@ -21,12 +21,6 @@ const { setUser, removeUser } = userSlice.actions
 
 export const logUserFromLocalStorage = () => {
   return (dispatch) => {
-    // const loggedUserJSON = window.localStorage.getItem("loggedBloglistUser")
-    // if (loggedUserJSON) {
-    //   const user = JSON.parse(loggedUserJSON)
-    //   blogService.setToken(user.token)
-    //   dispatch(setUser(user))
-    // }
     const user = userService.getCurrentUser()
     dispatch(setUser(user))
   }
@@ -37,8 +31,6 @@ export const loginUser = (username, password) => {
     try {
       const user = await loginService.login({ username, password })
       userService.setCurrentUser(user)
-      // window.localStorage.setItem("loggedBloglistUser", JSON.stringify(user))
-      // blogService.setToken(user.token)
       dispatch(setUser(user))
     } catch (e) {
       dispatch(showErrorNotification("Wrong username or password"))
@@ -48,7 +40,7 @@ export const loginUser = (username, password) => {
 
 export const logoutUser = () => {
   return (dispatch) => {
-    window.localStorage.removeItem("loggedBloglistUser")
+    userService.clearCurrentUser()
     dispatch(removeUser(null))
   }
 }
