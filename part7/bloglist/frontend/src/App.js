@@ -14,6 +14,7 @@ import {
 import LoginForm from "./components/LoginForm"
 import { initializeUsers } from "./reducers/usersReducer"
 import Users from "./components/Users"
+import User from "./components/User"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -59,6 +60,7 @@ const App = () => {
       {user && (
         <div>
           {user.name} logged in
+          <br />
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}
@@ -71,7 +73,7 @@ const App = () => {
           }
         />
         <Route path="/users" element={<Users />} />
-        {/* <Route path="/users/:id" element={ } /> */}
+        <Route path="/users/:id" element={<User />} />
         {/* <Route path="/blogs" element={ } /> */}
         {/* <Route path="/blogs/:id" element={ } /> */}
       </Routes>
