@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import Blog from "./components/Blog"
@@ -12,6 +12,7 @@ import {
   loginUser,
   logoutUser,
 } from "./reducers/userReducer"
+import LoginForm from "./components/LoginForm"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -21,9 +22,6 @@ const App = () => {
     (a, b) => b.likes - a.likes
   )
 
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -31,17 +29,12 @@ const App = () => {
     dispatch(initializeBlogs())
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = (username, password) => {
     dispatch(loginUser(username, password))
-    setUsername("")
-    setPassword("")
   }
 
   const handleLogout = () => {
     dispatch(logoutUser())
-    setUsername("")
-    setPassword("")
   }
 
   const handleCreateBlog = (blog) => {
@@ -49,38 +42,17 @@ const App = () => {
     blogFormRef.current.toggleVisibility() // close form after create
   }
 
+  // Login form if no user
   if (user === null) {
     return (
-      <div>
-        <h2>Log in to application</h2>
+      <>
         <Notification />
-        <form onSubmit={handleLogin}>
-          <div>
-            Username:
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            Password:
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <input type="submit" value="Login" />
-        </form>
-      </div>
+        <LoginForm onLogin={handleLogin} />
+      </>
     )
   }
 
+  // Blogs if user exists
   return (
     <div>
       <h2>Blogs</h2>
