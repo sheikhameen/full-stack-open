@@ -27,12 +27,12 @@ const clearCurrentUser = () => {
 }
 
 const getAllUsers = async () => {
-  const response = axios.get(baseUrl)
+  const response = await axios.get(baseUrl)
   return response.data
 }
 
 const getOneUser = async (id) => {
-  const response = axios.get(`${baseUrl}/${id}`)
+  const response = await axios.get(`${baseUrl}/${id}`)
   return response.data
 }
 

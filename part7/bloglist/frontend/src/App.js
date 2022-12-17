@@ -12,6 +12,8 @@ import {
   logoutUser,
 } from "./reducers/userReducer"
 import LoginForm from "./components/LoginForm"
+import { initializeUsers } from "./reducers/usersReducer"
+import Users from "./components/Users"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -23,6 +25,7 @@ const App = () => {
   useEffect(() => {
     dispatch(logUserFromLocalStorage())
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
 
   const handleLogin = (username, password) => {
@@ -67,7 +70,7 @@ const App = () => {
             <BlogList createBlog={handleCreateBlog} blogFormRef={blogFormRef} />
           }
         />
-        {/* <Route path="/users" element={ } /> */}
+        <Route path="/users" element={<Users />} />
         {/* <Route path="/users/:id" element={ } /> */}
         {/* <Route path="/blogs" element={ } /> */}
         {/* <Route path="/blogs/:id" element={ } /> */}
