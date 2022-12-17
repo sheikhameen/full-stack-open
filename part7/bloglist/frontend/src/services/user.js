@@ -1,3 +1,6 @@
+import axios from "axios"
+
+const baseUrl = "/api/users"
 let token = null
 
 const STORAGE_KEY = "loggedBlogAppUser"
@@ -23,6 +26,16 @@ const clearCurrentUser = () => {
   token = null
 }
 
+const getAllUsers = async () => {
+  const response = axios.get(baseUrl)
+  return response.data
+}
+
+const getOneUser = async (id) => {
+  const response = axios.get(`${baseUrl}/${id}`)
+  return response.data
+}
+
 const getToken = () => token
 
 export default {
@@ -30,4 +43,6 @@ export default {
   getCurrentUser,
   clearCurrentUser,
   getToken,
+  getAllUsers,
+  getOneUser,
 }
