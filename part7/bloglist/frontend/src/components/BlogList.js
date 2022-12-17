@@ -5,7 +5,6 @@ import BlogForm from "./BlogForm"
 import Blog from "./Blog"
 
 const BlogList = ({ createBlog, blogFormRef }) => {
-  const user = useSelector((state) => state.user)
   const blogs = [...useSelector((state) => state.blogs)].sort(
     (a, b) => b.likes - a.likes
   )
@@ -20,7 +19,7 @@ const BlogList = ({ createBlog, blogFormRef }) => {
       </div>
       <br />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} currentUser={user} />
+        <Blog key={blog.id} blog={blog} />
       ))}
     </div>
   )

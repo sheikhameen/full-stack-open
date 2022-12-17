@@ -15,6 +15,7 @@ import LoginForm from "./components/LoginForm"
 import { initializeUsers } from "./reducers/usersReducer"
 import Users from "./components/Users"
 import User from "./components/User"
+import BlogView from "./components/BlogView"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -74,8 +75,7 @@ const App = () => {
         />
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
-        {/* <Route path="/blogs" element={ } /> */}
-        {/* <Route path="/blogs/:id" element={ } /> */}
+        <Route path="/blogs/:id" element={<BlogView />} />
       </Routes>
     </div>
   )
