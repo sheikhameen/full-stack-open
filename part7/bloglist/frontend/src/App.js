@@ -1,10 +1,8 @@
 import { useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import Blog from "./components/Blog"
+import Blogs from "./components/Blogs"
 import Notification from "./components/Notification"
-import Togglable from "./components/Togglable"
-import BlogForm from "./components/BlogForm"
 
 import { initializeBlogs, createBlog } from "./reducers/blogReducer"
 import {
@@ -18,9 +16,6 @@ const App = () => {
   const dispatch = useDispatch()
 
   const user = useSelector((state) => state.user)
-  const blogs = [...useSelector((state) => state.blogs)].sort(
-    (a, b) => b.likes - a.likes
-  )
 
   const blogFormRef = useRef()
 
@@ -62,16 +57,7 @@ const App = () => {
         <button onClick={handleLogout}>Logout</button>
       </div>
       <br />
-      <div>
-        <h2>Create new</h2>
-        <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-          <BlogForm createBlog={handleCreateBlog} />
-        </Togglable>
-      </div>
-      <br />
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} currentUser={user} />
-      ))}
+      <Blogs createBlog={handleCreateBlog} blogFormRef={blogFormRef} />
     </div>
   )
 }
