@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Link } from "react-router-dom"
 
 import BlogList from "./components/BlogList"
 import Notification from "./components/Notification"
@@ -43,7 +43,6 @@ const App = () => {
     blogFormRef.current.toggleVisibility() // close form after create
   }
 
-  // Login form if no user
   if (user === null) {
     return (
       <>
@@ -53,18 +52,15 @@ const App = () => {
     )
   }
 
-  // Blogs if user exists
   return (
     <div>
-      <h2>Blogs</h2>
+      <div>
+        <Link to="/">Blogs</Link>
+        <Link to="/users">Users</Link>
+        {user.name} logged in <button onClick={handleLogout}>Logout</button>
+      </div>
+      <h2>Blog App</h2>
       <Notification />
-      {user && (
-        <div>
-          {user.name} logged in
-          <br />
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      )}
 
       <Routes>
         <Route
