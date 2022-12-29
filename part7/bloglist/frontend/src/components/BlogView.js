@@ -25,6 +25,13 @@ const BlogView = () => {
         </button>
       </div>
       <div>added by {blog.user.username}</div>
+
+      <h3>Comments</h3>
+      <ul>
+        {blog.comments.map((c) => (
+          <li key={c.id}>{c.content}</li>
+        ))}
+      </ul>
     </div>
   )
 }
