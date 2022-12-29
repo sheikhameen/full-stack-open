@@ -24,6 +24,13 @@ const update = async (id, newObject) => {
   return response.data
 }
 
+const addComment = async (id, newComment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, {
+    content: newComment,
+  })
+  return response.data
+}
+
 const deleteBlog = async (id) => {
   const response = await axios.delete(`${baseUrl}/${id}`, config())
   return response
@@ -33,6 +40,7 @@ const exports = {
   getAll,
   create,
   update,
+  addComment,
   deleteBlog,
 }
 export default exports
