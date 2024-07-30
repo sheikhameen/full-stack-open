@@ -106,10 +106,18 @@ const typeDefs = `#graphql
     id: ID!
   }
 
+  type Author {
+    id: ID!
+    name: String!
+    born: Int
+    bookCount: Int!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks: [Book!]!
+    allAuthors: [Author!]!
   }
 `;
 
@@ -118,6 +126,18 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: () => books,
+    allAuthors: () => authors,
+  },
+
+  Author: {
+    bookCount: (root) => {
+      const initialValue = 0;
+      const count = books.reduce(
+        (prev, curr) => (curr.author === root.name ? prev + 1 : prev),
+        initialValue
+      );
+      return count;
+    },
   },
 };
 
