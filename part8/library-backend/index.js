@@ -103,6 +103,7 @@ const typeDefs = `#graphql
     author: String!
     published: Int!
     genres: [String!]!
+    id: ID!
   }
 
   type Query {
