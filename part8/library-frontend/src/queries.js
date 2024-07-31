@@ -22,11 +22,12 @@ export const ALL_BOOKS = gql`
     }
   }
 `;
-export const FAVORITE_BOOKS = gql`
-  query favoriteBooks($genre: String) {
+export const FILTER_BY_GENRE = gql`
+  query filterByGenre($genre: String) {
     allBooks(genre: $genre) {
       title
       published
+      genres
       author {
         name
       }

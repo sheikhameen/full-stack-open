@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { FAVORITE_BOOKS, ME } from "../queries";
+import { FILTER_BY_GENRE, ME } from "../queries";
 
 const Recommendations = ({ show }) => {
   const [favoriteGenre, setFavoriteGenre] = useState(null);
@@ -9,7 +9,7 @@ const Recommendations = ({ show }) => {
       setFavoriteGenre(data.me.favoriteGenre);
     },
   });
-  const resultGenreBooks = useQuery(FAVORITE_BOOKS, {
+  const resultGenreBooks = useQuery(FILTER_BY_GENRE, {
     variables: { genre: favoriteGenre },
     skip: !favoriteGenre,
   });
