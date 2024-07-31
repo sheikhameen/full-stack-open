@@ -125,31 +125,21 @@ const typeDefs = `#graphql
   }
 `;
 
+// Whats not working
+// author bookCount
+
 const resolvers = {
   Query: {
     bookCount: async () => Book.countDocuments(),
     authorCount: async () => Author.countDocuments(),
     allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return Book.find({});
-      }
-
-      // With params beyond this point...
-      let booksToReturn = books;
-
-      if (args.author) {
-        booksToReturn = booksToReturn.filter(
-          (book) => book.author === args.author
-        );
+        return Book.find({}).populate("author");
       }
 
       if (args.genre) {
-        booksToReturn = booksToReturn.filter((book) =>
-          book.genres.includes(args.genre)
-        );
+        return Book.find({ genres: args.genre }).populate("author");
       }
-
-      return booksToReturn;
     },
     allAuthors: async () => Author.find({}),
   },
@@ -166,15 +156,14 @@ const resolvers = {
       const book = new Book({ ...args, author });
       return book.save();
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((a) => a.name === args.name);
+    editAuthor: async (root, args) => {
+      // const author = authors.find((a) => a.name === args.name);
+      const author = await Author.findOne({ name: args.name });
 
       if (!author) return null;
 
-      const updatedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a));
-
-      return updatedAuthor;
+      author.born = args.setBornTo;
+      return author.save();
     },
   },
 
