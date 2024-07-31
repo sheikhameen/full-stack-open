@@ -7,6 +7,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 const Book = require("./models/book");
 const Author = require("./models/author");
+const { GraphQLError } = require("graphql");
 
 console.log("connecting to", MONGODB_URI);
 mongoose
@@ -125,21 +126,23 @@ const typeDefs = `#graphql
   }
 `;
 
-// Whats not working
-// author bookCount
-
 const resolvers = {
   Query: {
     bookCount: async () => Book.countDocuments(),
     authorCount: async () => Author.countDocuments(),
     allBooks: async (root, args) => {
-      if (!args.author && !args.genre) {
-        return Book.find({}).populate("author");
-      }
+      let books = Book.find({}).populate("author");
 
       if (args.genre) {
-        return Book.find({ genres: args.genre }).populate("author");
+        books = books.find({ genres: args.genre });
       }
+
+      if (args.author) {
+        const author = await Author.find({ name: args.author });
+        books = books.find({ author });
+      }
+
+      return books;
     },
     allAuthors: async () => Author.find({}),
   },
@@ -149,15 +152,31 @@ const resolvers = {
       let author = await Author.findOne({ name: args.author });
       if (!author) {
         author = new Author({ name: args.author, born: null });
-        await author.save();
+
+        await author.save().catch((error) => {
+          throw new GraphQLError("Creating author failed.", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.author,
+              error,
+            },
+          });
+        });
       }
 
       // Create new book with author
       const book = new Book({ ...args, author });
-      return book.save();
+      return book.save().catch((error) => {
+        throw new GraphQLError("Creating book failed.", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.title,
+            error,
+          },
+        });
+      });
     },
     editAuthor: async (root, args) => {
-      // const author = authors.find((a) => a.name === args.name);
       const author = await Author.findOne({ name: args.name });
 
       if (!author) return null;
@@ -168,13 +187,9 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: (root) => {
-      const initialValue = 0;
-      const count = books.reduce(
-        (prev, curr) => (curr.author === root.name ? prev + 1 : prev),
-        initialValue
-      );
-      return count;
+    bookCount: async (root) => {
+      const author = await Author.findOne({ name: root.name });
+      return Book.countDocuments({ author });
     },
   },
 };
