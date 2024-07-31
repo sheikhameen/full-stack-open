@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { FILTER_BY_GENRE } from "../queries";
+import { ALL_BOOKS } from "../queries";
 import { useState } from "react";
 
 const Books = (props) => {
@@ -7,7 +7,7 @@ const Books = (props) => {
   const [genres, setGenres] = useState([]);
 
   // Query to initialise genres
-  useQuery(FILTER_BY_GENRE, {
+  useQuery(ALL_BOOKS, {
     variables: { genre: null },
     onCompleted: ({ allBooks }) => {
       const genreSet = new Set();
@@ -21,7 +21,7 @@ const Books = (props) => {
   });
 
   // Query to filter by genre
-  const resultBooks = useQuery(FILTER_BY_GENRE, {
+  const resultBooks = useQuery(ALL_BOOKS, {
     variables: { genre: selectedGenre },
   });
 
