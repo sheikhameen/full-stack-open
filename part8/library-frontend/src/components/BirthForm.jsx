@@ -7,6 +7,7 @@ const BirthForm = ({ authors }) => {
   const [born, setBorn] = useState("");
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (e) => console.log(e.graphQLErrors[0].message),
   });
 
   const submit = async (event) => {
