@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from "../queries";
+import { ALL_BOOKS, ADD_BOOK, ALL_AUTHORS } from "../queries";
 import { useMutation } from "@apollo/client";
 
 const NewBook = (props) => {
@@ -8,8 +8,31 @@ const NewBook = (props) => {
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
-  const [createBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+  const [createBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    update: (cache, response) => {
+      // For each of the genre from server, update the query in cache
+      response.data.addBook.genres.forEach((g) => {
+        cache.updateQuery(
+          { query: ALL_BOOKS, variables: { genre: g } },
+          (data) => {
+            return {
+              allBooks: data.allBooks.concat(response.data.addBook),
+            };
+          }
+        );
+      });
+
+      // Also update all books
+      cache.updateQuery(
+        { query: ALL_BOOKS, variables: { genre: null } },
+        (data) => {
+          return {
+            allBooks: data.allBooks.concat(response.data.addBook),
+          };
+        }
+      );
+    },
   });
 
   if (!props.show) {
