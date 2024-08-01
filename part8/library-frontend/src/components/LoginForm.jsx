@@ -46,6 +46,7 @@ const LoginForm = ({ show, setToken, showHomepage }) => {
         <div>
           Password:{" "}
           <input
+            type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
