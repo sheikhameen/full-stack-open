@@ -13,7 +13,6 @@ const App = () => {
   const client = useApolloClient();
   const { data: dataMe, refetch } = useQuery(ME);
 
-  // console.log(data);
   useEffect(() => {
     refetch();
   }, [token]);

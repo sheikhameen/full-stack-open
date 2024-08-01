@@ -19,7 +19,6 @@ const NewBook = (props) => {
         cache.updateQuery(
           { query: ALL_BOOKS, variables: { genre: g } },
           (data) => {
-            console.log(data);
             if (data) {
               // If query exists in cache, concat
               return {
