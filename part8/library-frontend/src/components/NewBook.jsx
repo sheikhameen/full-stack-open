@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ALL_BOOKS, ADD_BOOK, ALL_AUTHORS } from "../queries";
-import { useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState("");
@@ -8,17 +8,33 @@ const NewBook = (props) => {
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
+
+  const client = useApolloClient();
+
   const [createBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_AUTHORS }],
-    update: (cache, response) => {
+    update: (cache, { data: { addBook } }) => {
       // For each of the genre from server, update the query in cache
-      response.data.addBook.genres.forEach((g) => {
+      addBook.genres.forEach((g) => {
         cache.updateQuery(
           { query: ALL_BOOKS, variables: { genre: g } },
           (data) => {
-            return {
-              allBooks: data.allBooks.concat(response.data.addBook),
-            };
+            console.log(data);
+            if (data) {
+              // If query exists in cache, concat
+              return {
+                allBooks: data.allBooks.concat(addBook),
+              };
+            } else {
+              /**
+               * If query for book by genre doesn't exist in cache
+               * It may actually exist on the server, but we just haven't fetched it yet
+               * because we never needed it
+               * (just opened app and created book, didnt filter by genre in books section yet)
+               * So we should fetch that query from the server.
+               */
+              client.query({ query: ALL_BOOKS, variables: { genre: g } });
+            }
           }
         );
       });
@@ -28,7 +44,7 @@ const NewBook = (props) => {
         { query: ALL_BOOKS, variables: { genre: null } },
         (data) => {
           return {
-            allBooks: data.allBooks.concat(response.data.addBook),
+            allBooks: data.allBooks.concat(addBook),
           };
         }
       );
