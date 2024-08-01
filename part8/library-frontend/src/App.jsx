@@ -3,13 +3,20 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import Recommendations from "./components/Recommendations";
+import { ME } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
   const client = useApolloClient();
+  const { data: dataMe, refetch } = useQuery(ME);
+
+  // console.log(data);
+  useEffect(() => {
+    refetch();
+  }, [token]);
 
   useEffect(() => {
     const loggedUserJSON = localStorage.getItem("library-user-token");
@@ -59,7 +66,7 @@ const App = () => {
         setToken={setToken}
       />
 
-      <Recommendations show={page === "recommendations"} />
+      {page === "recommendations" && <Recommendations me={dataMe.me} />}
     </div>
   );
 };
