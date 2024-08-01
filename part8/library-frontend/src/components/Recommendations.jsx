@@ -6,7 +6,9 @@ const Recommendations = ({ show }) => {
   const [favoriteGenre, setFavoriteGenre] = useState(null);
   const resultMe = useQuery(ME, {
     onCompleted: (data) => {
-      setFavoriteGenre(data.me.favoriteGenre);
+      if (data.me) {
+        setFavoriteGenre(data.me.favoriteGenre);
+      }
     },
   });
   const resultGenreBooks = useQuery(ALL_BOOKS, {
