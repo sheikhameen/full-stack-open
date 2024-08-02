@@ -1,8 +1,8 @@
+import { isNumber } from "./utils";
+
 const calculateBmi = (height: number, weight: number): string => {
   const heightInMetres = height / 100;
-
   const bmi = weight / (heightInMetres * heightInMetres);
-
   if (bmi < 16) return "Underweight (Severe thinness)";
   if (bmi < 16.9) return "Underweight (Moderate thinness)";
   if (bmi < 18.4) return "Underweight (Mild thinness)";
@@ -13,4 +13,32 @@ const calculateBmi = (height: number, weight: number): string => {
   return "Obese (Class III)";
 };
 
-console.log(calculateBmi(180, 74));
+interface BmiValues {
+  height: number;
+  weight: number;
+}
+
+const parseArguments = (args: string[]): BmiValues => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+  if (args.length > 4) throw new Error("Too many arguments");
+
+  if (isNumber(args[2]) && isNumber(args[3])) {
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3]),
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
+  }
+};
+
+try {
+  const { height, weight } = parseArguments(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMessage = "Something went wrong.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}

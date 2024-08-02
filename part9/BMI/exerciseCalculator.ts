@@ -1,3 +1,5 @@
+import { isNumber } from "./utils";
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -40,7 +42,36 @@ const calculateExercises = (
   };
 };
 
-const dailyExerciseHours = [3, 0, 2, 4.5, 0, 3, 1];
-const targetHours = 2;
+const parseArguments = (args: string[]) => {
+  if (args.length < 4) throw new Error("Not enough arguments");
 
-console.log(calculateExercises(dailyExerciseHours, targetHours));
+  if (!isNumber(args[2])) {
+    throw new Error(
+      `${args[2]} is not a number. Target hours must be a number!`
+    );
+  }
+
+  const hoursArray = args.slice(3);
+  const hours = hoursArray.map((h) => {
+    if (!isNumber(h)) {
+      throw new Error(`${h} is not a number. Daily hours must be numbers!`);
+    }
+    return Number(h);
+  });
+
+  return {
+    target: Number(args[2]),
+    hours,
+  };
+};
+
+try {
+  const { hours, target } = parseArguments(process.argv);
+  console.log(calculateExercises(hours, target));
+} catch (error: unknown) {
+  let errorMessage = "Something went wrong.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
