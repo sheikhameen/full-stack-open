@@ -1,5 +1,12 @@
+const { PubSub } = require("graphql-subscriptions");
+const jwt = require("jsonwebtoken");
+
 const Book = require("./models/book");
 const Author = require("./models/author");
+const User = require("./models/user");
+const { GraphQLError } = require("graphql");
+
+const pubsub = new PubSub();
 
 const resolvers = {
   Query: {
@@ -26,6 +33,7 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args, context) => {
+      // Authorisation check
       if (!context.currentUser) {
         throw new GraphQLError("You are not allowed to add a book", {
           extensions: {
@@ -39,7 +47,9 @@ const resolvers = {
       if (!author) {
         author = new Author({ name: args.author, born: null });
 
-        await author.save().catch((error) => {
+        try {
+          await author.save();
+        } catch (error) {
           throw new GraphQLError("Creating author failed.", {
             extensions: {
               code: "BAD_USER_INPUT",
@@ -47,12 +57,15 @@ const resolvers = {
               error,
             },
           });
-        });
+        }
       }
 
       // Create new book with author
       const book = new Book({ ...args, author });
-      return book.save().catch((error) => {
+
+      try {
+        await book.save();
+      } catch (error) {
         throw new GraphQLError("Creating book failed.", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -60,7 +73,11 @@ const resolvers = {
             error,
           },
         });
-      });
+      }
+
+      pubsub.publish("BOOK_ADDED", { bookAdded: book });
+
+      return book;
     },
     editAuthor: async (root, args, context) => {
       if (!context.currentUser) {
@@ -110,6 +127,12 @@ const resolvers = {
       };
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+    },
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator("BOOK_ADDED"),
     },
   },
 
