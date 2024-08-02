@@ -138,8 +138,7 @@ const resolvers = {
 
   Author: {
     bookCount: async (root) => {
-      const author = await Author.findOne({ name: root.name });
-      return Book.countDocuments({ author });
+      return Book.countDocuments({ author: root._id });
     },
   },
 };
