@@ -45,14 +45,6 @@ const NewBook = (props) => {
         { query: ALL_BOOKS, variables: { genre: null } },
         addBook
       );
-      // cache.updateQuery(
-      //   { query: ALL_BOOKS, variables: { genre: null } },
-      //   (data) => {
-      //     return {
-      //       allBooks: data.allBooks.concat(addBook),
-      //     };
-      //   }
-      // );
     },
   });
 

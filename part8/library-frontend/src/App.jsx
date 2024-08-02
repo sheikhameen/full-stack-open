@@ -39,14 +39,6 @@ const App = () => {
         { query: ALL_BOOKS, variables: { genre: null } },
         addedBook
       );
-      // client.cache.updateQuery(
-      //   { query: ALL_BOOKS, variables: { genre: null } },
-      //   ({ allBooks }) => {
-      //     return {
-      //       allBooks: allBooks.concat(addedBook),
-      //     };
-      //   }
-      // );
     },
   });
 
