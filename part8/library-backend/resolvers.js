@@ -137,8 +137,8 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: async (root) => {
-      return Book.countDocuments({ author: root._id });
+    bookCount: async (root, args, { bookCountLoader }) => {
+      return bookCountLoader.load(root._id);
     },
   },
 };

@@ -13,6 +13,7 @@ const mongoose = require("mongoose");
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 
+const { createBookCountLoader } = require("./loaders");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
 const User = require("./models/user");
@@ -76,8 +77,9 @@ const start = async () => {
             process.env.JWT_SECRET
           );
           const currentUser = await User.findById(decodedToken.id);
-          return { currentUser };
+          return { currentUser, bookCountLoader: createBookCountLoader() };
         }
+        return { bookCountLoader: createBookCountLoader() };
       },
     })
   );
