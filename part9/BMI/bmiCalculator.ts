@@ -1,6 +1,6 @@
 import { isNumber } from "./utils";
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const heightInMetres = height / 100;
   const bmi = weight / (heightInMetres * heightInMetres);
   if (bmi < 16) return "Underweight (Severe thinness)";
