@@ -5,7 +5,7 @@ import toNewPatient from "../utils";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
-  return res.send(patientService.getAllPatientsWithoutSSN());
+  return res.send(patientService.getAllNonSensitivePatients());
 });
 
 router.post("/", (req, res) => {
@@ -21,6 +21,11 @@ router.post("/", (req, res) => {
     }
     res.status(400).send(errorMessage);
   }
+});
+
+router.get("/:id", (req, res) => {
+  const patient = patientService.getPatient(req.params.id);
+  return res.send(patient);
 });
 
 export default router;
