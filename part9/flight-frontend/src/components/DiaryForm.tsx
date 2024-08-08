@@ -25,6 +25,7 @@ const DiaryForm = ({
     event.preventDefault();
 
     try {
+      console.log({ date, comment, visibility, weather });
       const newEntry = await diaryService.createEntry({
         date,
         comment,
@@ -57,23 +58,44 @@ const DiaryForm = ({
         <div>
           Date:
           <input
+            type="date"
             value={date}
             onChange={({ target }) => setDate(target.value)}
           />
         </div>
         <div>
           Visibility:
-          <input
-            value={visibility}
-            onChange={({ target }) => setVisibility(target.value)}
-          />
+          {["great", "good", "ok", "poor"].map((v) => (
+            <span key={v}>
+              <label htmlFor={v}>{v}</label>
+              <input
+                type="radio"
+                name="visibility"
+                id={v}
+                checked={v === visibility}
+                value={v}
+                onChange={({ target }) => setVisibility(target.value)}
+              />
+            </span>
+          ))}
         </div>
         <div>
-          Weather:
-          <input
-            value={weather}
-            onChange={({ target }) => setWeather(target.value)}
-          />
+          <div>
+            Weather:
+            {["sunny", "rainy", "cloudy", "stormy", "windy"].map((w) => (
+              <span key={w}>
+                <label htmlFor={w}>{w}</label>
+                <input
+                  type="radio"
+                  name="weather"
+                  id={w}
+                  checked={w === weather}
+                  value={w}
+                  onChange={({ target }) => setWeather(target.value)}
+                />
+              </span>
+            ))}
+          </div>
         </div>
         <div>
           Comment:
