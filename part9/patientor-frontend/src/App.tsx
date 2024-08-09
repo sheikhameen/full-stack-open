@@ -8,7 +8,7 @@ import { Diagnosis, Patient } from "./types";
 
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
-import PatientInfoPage from "./components/PatientInfoPage";
+import PatientInfoPage from "./components/PatientInfoPage/PatientInfoPage";
 import diagnosesService from "./services/diagnoses";
 
 const App = () => {
