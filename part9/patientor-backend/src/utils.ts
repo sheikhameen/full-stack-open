@@ -1,4 +1,19 @@
-import { Gender, NewPatient } from "./types";
+import {
+  Diagnosis,
+  Entry,
+  EntryWithoutId,
+  Gender,
+  HealthCheckRating,
+  HospitalEntry,
+  NewPatient,
+  OccupationalHealthcareEntry,
+} from "./types";
+
+const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};
 
 const isString = (value: unknown): value is string => {
   return typeof value === "string";
@@ -67,5 +82,157 @@ export const toNewPatient = (body: unknown): NewPatient => {
     return newPatient;
   } else {
     throw new Error("Incorrect data: some fields are missing");
+  }
+};
+
+// -----------------------------------
+
+const isEntryType = (value: string): value is Entry["type"] => {
+  return ["HealthCheck", "Hospital", "OccupationalHealthcare"].includes(value);
+};
+
+const isDischarge = (obj: object): obj is HospitalEntry["discharge"] => {
+  return (
+    "date" in obj &&
+    isString(obj.date) &&
+    isDate(obj.date) &&
+    "criteria" in obj &&
+    isString(obj.criteria)
+  );
+};
+
+const isSickLeave = (
+  obj: object | undefined
+): obj is OccupationalHealthcareEntry["sickLeave"] => {
+  if (typeof obj === "undefined") return false;
+
+  return (
+    "startDate" in obj &&
+    isString(obj.startDate) &&
+    isDate(obj.startDate) &&
+    "endDate" in obj &&
+    isString(obj.endDate) &&
+    isDate(obj.endDate)
+  );
+};
+
+const isHealthCheckRating = (value: number): value is HealthCheckRating => {
+  return Object.values(HealthCheckRating).includes(value);
+};
+
+const parseDescription = (description: unknown): string => {
+  if (!description || !isString(description)) {
+    throw new Error("Incorrect or missing description");
+  }
+  return description;
+};
+
+const parseDate = (parseDate: unknown): string => {
+  if (!parseDate || !isString(parseDate) || !isDate(parseDate)) {
+    throw new Error("Incorrect or missing date");
+  }
+  return parseDate;
+};
+
+const parseDiagnosisCodes = (object: unknown): Array<Diagnosis["code"]> => {
+  if (!object || typeof object !== "object" || !("diagnosisCodes" in object)) {
+    // we will just trust the data to be in correct form
+    return [] as Array<Diagnosis["code"]>;
+  }
+
+  return object.diagnosisCodes as Array<Diagnosis["code"]>;
+};
+
+export const toNewEntry = (body: unknown): EntryWithoutId => {
+  if (!body || typeof body !== "object") {
+    throw new Error("Incorrect or missing data");
+  }
+
+  if (
+    !("description" in body) ||
+    !("date" in body) ||
+    !("specialist" in body) ||
+    !("type" in body)
+  ) {
+    throw new Error("Incorrect data: some fields are missing");
+  }
+
+  if (!isString(body.type) || !isEntryType(body.type)) {
+    throw new Error("Incorrect data: type is invalid");
+  }
+
+  const commonFields = {
+    description: parseDescription(body.description),
+    date: parseDate(body.date),
+    specialist: parseName(body.specialist),
+    diagnosisCodes: parseDiagnosisCodes(body),
+  };
+
+  switch (body.type) {
+    case "Hospital":
+      if (
+        !("discharge" in body) ||
+        !body.discharge ||
+        typeof body.discharge !== "object" ||
+        !isDischarge(body.discharge)
+      )
+        throw new Error(
+          "Incorrect data: discharge field is missing or invalid in type Hospital"
+        );
+
+      return {
+        ...commonFields,
+        type: body.type,
+        discharge: body.discharge,
+      };
+
+    case "OccupationalHealthcare":
+      if (
+        !("employerName" in body) ||
+        !body.employerName ||
+        !isString(body.employerName)
+      )
+        throw new Error(
+          "Incorrect data: employerName field is missing or invalid in type OccupationalHealthcare"
+        );
+
+      if (
+        "sickLeave" in body &&
+        body.sickLeave &&
+        typeof body.sickLeave === "object" &&
+        isSickLeave(body.sickLeave)
+      ) {
+        return {
+          ...commonFields,
+          type: body.type,
+          employerName: body.employerName,
+          sickLeave: body.sickLeave,
+        };
+      }
+
+      return {
+        ...commonFields,
+        type: body.type,
+        employerName: body.employerName,
+      };
+    case "HealthCheck":
+      if (
+        !("healthCheckRating" in body) ||
+        !body.healthCheckRating ||
+        typeof body.healthCheckRating !== "number" ||
+        !isHealthCheckRating(body.healthCheckRating)
+      ) {
+        throw new Error(
+          "Incorrect data: healthCheckRating field is missing or invalid in type HealthCheck"
+        );
+      }
+
+      return {
+        ...commonFields,
+        type: body.type,
+        healthCheckRating: body.healthCheckRating,
+      };
+    default:
+      return assertNever(body.type);
   }
 };
