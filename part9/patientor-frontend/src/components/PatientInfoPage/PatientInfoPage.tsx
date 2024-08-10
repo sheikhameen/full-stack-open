@@ -1,19 +1,42 @@
 import patientService from "../../services/patients";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Diagnosis, Patient } from "../../types";
+import { Diagnosis, EntryWithoutId, Patient } from "../../types";
 import EntryDetails from "./EntryDetails";
 import GenderIcon from "./GenderIcon";
+import EntryForm from "./EntryForm";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
   const id = useParams().id;
   const [patient, setPatient] = useState<Patient | null>(null);
 
   useEffect(() => {
-    if (id) {
-      patientService.getOne(id).then((data) => setPatient(data));
+    if (!id) return;
+
+    const getPatient = async () => {
+      try {
+        const data = await patientService.getOne(id);
+        setPatient(data);
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response) {
+          toast.error(error.response.data);
+        }
+      }
+    };
+    getPatient();
+  }, [id]);
+
+  const addEntryToPatient = async (obj: EntryWithoutId) => {
+    if (!id) return;
+
+    const addedEntry = await patientService.addEntry(id, obj);
+
+    if (patient) {
+      setPatient({ ...patient, entries: patient.entries.concat(addedEntry) });
     }
-  });
+  };
 
   if (!patient) return null;
 
@@ -24,6 +47,7 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
       </h2>
       <p>ssn: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
+      <EntryForm addEntry={addEntryToPatient} />
       <h3>Entries</h3>
       {patient.entries.map((e) => (
         <div
