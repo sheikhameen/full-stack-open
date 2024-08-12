@@ -102,13 +102,19 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
         </button>
       </div>
       {currentEntryForm === "HealthCheck" && (
-        <HealthCheckEntryForm addEntry={addEntryToPatient} />
+        <HealthCheckEntryForm
+          diagnoses={diagnoses}
+          addEntry={addEntryToPatient}
+        />
       )}
       {currentEntryForm === "Hospital" && (
-        <HospitalEntryForm addEntry={addEntryToPatient} />
+        <HospitalEntryForm diagnoses={diagnoses} addEntry={addEntryToPatient} />
       )}
       {currentEntryForm === "OccupationalHealthcare" && (
-        <OccupationalHealthcareEntryForm addEntry={addEntryToPatient} />
+        <OccupationalHealthcareEntryForm
+          diagnoses={diagnoses}
+          addEntry={addEntryToPatient}
+        />
       )}
       <h3>Entries</h3>
       {patient.entries.map((e) => (

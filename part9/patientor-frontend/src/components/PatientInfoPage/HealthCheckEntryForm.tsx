@@ -2,24 +2,37 @@ import React, { useState } from "react";
 import { Diagnosis, EntryWithoutId, HealthCheckRating } from "../../types";
 import axios from "axios";
 import toast from "react-hot-toast";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+
+function getStyles(name: string, selectedDiagnosisCodes: string[]) {
+  return {
+    fontWeight: selectedDiagnosisCodes.indexOf(name) === -1 ? "400" : "600",
+  };
+}
 
 const HealthCheckEntryForm = ({
   addEntry,
+  diagnoses,
 }: {
   addEntry: (obj: EntryWithoutId) => Promise<void>;
+  diagnoses: Diagnosis[];
 }) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [healthCheckRating, setHealthCheckRating] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState("");
+  // const [diagnosisCodes, setDiagnosisCodes] = useState("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     const rating: HealthCheckRating = parseInt(healthCheckRating);
-    const diagnosisCodesArray: Array<Diagnosis["code"]> =
-      diagnosisCodes.split(", ");
+    // const diagnosisCodesArray: Array<Diagnosis["code"]> = diagnosisCodes.split(", ");
 
     try {
       await addEntry({
@@ -28,7 +41,7 @@ const HealthCheckEntryForm = ({
         description: description,
         specialist,
         healthCheckRating: rating,
-        diagnosisCodes: diagnosisCodesArray,
+        diagnosisCodes,
       });
 
       toast.success("Entry added succesfully");
@@ -36,7 +49,8 @@ const HealthCheckEntryForm = ({
       setDate("");
       setSpecialist("");
       setHealthCheckRating("");
-      setDiagnosisCodes("");
+      // setDiagnosisCodes("");
+      setDiagnosisCodes([]);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -44,6 +58,18 @@ const HealthCheckEntryForm = ({
         }
       }
     }
+  };
+
+  const handleDiagnosesSelectChange = (
+    event: SelectChangeEvent<typeof diagnosisCodes>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    setDiagnosisCodes(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
   };
 
   return (
@@ -83,14 +109,31 @@ const HealthCheckEntryForm = ({
             onChange={({ target }) => setHealthCheckRating(target.value)}
           />
         </div>
-        <div>
-          Diagnosis Codes:
-          <input
-            type="text"
+
+        <FormControl sx={{ m: 1, width: 300 }}>
+          <InputLabel id="multiple-diagnosisCodes-label">
+            Diagnosis Codes
+          </InputLabel>
+          <Select
+            labelId="multiple-diagnosisCodes-label"
+            id="multiple-diagnosisCodes"
             value={diagnosisCodes}
-            onChange={({ target }) => setDiagnosisCodes(target.value)}
-          />
-        </div>
+            multiple
+            onChange={handleDiagnosesSelectChange}
+            input={<OutlinedInput label="Diagnosis Codes" />}
+          >
+            {diagnoses.map((d) => (
+              <MenuItem
+                key={d.code}
+                value={d.code}
+                style={getStyles(d.code, diagnosisCodes)}
+              >
+                {d.code}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <button type="submit">Add</button>
       </form>
     </div>
