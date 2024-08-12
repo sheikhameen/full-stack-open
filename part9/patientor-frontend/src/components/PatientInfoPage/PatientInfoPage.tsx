@@ -10,6 +10,7 @@ import HealthCheckEntryForm from "./HealthCheckEntryForm";
 import HospitalEntryForm from "./HospitalEntryForm";
 import OccupationalHealthcareEntryForm from "./OccupationalHealthcareEntryForm";
 import { Close } from "@mui/icons-material";
+import Button from "@mui/material/Button";
 
 const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
   const id = useParams().id;
@@ -54,7 +55,7 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
       <p>ssn: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
       <div style={{ display: "flex", height: "40px" }}>
-        <button
+        {/* <button
           style={{
             borderRadius: "10px 10px 0 0",
             backgroundColor: "#0277bd",
@@ -64,8 +65,14 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
           onClick={() => setCurrentEntryForm("HealthCheck")}
         >
           Show Healthcheck Entry form
-        </button>
-        <button
+        </button> */}
+        <Button
+          variant="contained"
+          onClick={() => setCurrentEntryForm("HealthCheck")}
+        >
+          Healthcheck Entry form
+        </Button>
+        {/* <button
           style={{
             borderRadius: "10px 10px 0 0",
             backgroundColor: "#0277bd",
@@ -75,8 +82,14 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
           onClick={() => setCurrentEntryForm("Hospital")}
         >
           Show Hospital Entry form
-        </button>
-        <button
+        </button> */}
+        <Button
+          variant="contained"
+          onClick={() => setCurrentEntryForm("Hospital")}
+        >
+          Hospital Entry form
+        </Button>
+        {/* <button
           style={{
             borderRadius: "10px 10px 0 0",
             backgroundColor: "#0277bd",
@@ -86,8 +99,24 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
           onClick={() => setCurrentEntryForm("OccupationalHealthcare")}
         >
           Show Occupational Healthcare Entry form
-        </button>
-        <button
+        </button> */}
+        <Button
+          variant="contained"
+          onClick={() => setCurrentEntryForm("OccupationalHealthcare")}
+        >
+          Occupational Healthcare Entry form
+        </Button>
+        <Button
+          style={{
+            display: currentEntryForm ? "inline-block" : "none",
+            backgroundColor: "#ef5350",
+          }}
+          variant="contained"
+          onClick={() => setCurrentEntryForm(null)}
+        >
+          <Close />
+        </Button>
+        {/* <button
           style={{
             display: currentEntryForm ? "inline-block" : "none",
 
@@ -99,7 +128,7 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
           onClick={() => setCurrentEntryForm(null)}
         >
           <Close />
-        </button>
+        </button> */}
       </div>
       {currentEntryForm === "HealthCheck" && (
         <HealthCheckEntryForm
