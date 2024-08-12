@@ -7,6 +7,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 function getStyles(name: string, selectedDiagnosisCodes: string[]) {
   return {
@@ -26,14 +28,10 @@ const HospitalEntryForm = ({
   const [specialist, setSpecialist] = useState("");
   const [dischargeDate, setDischargeDate] = useState("");
   const [dischargeCriteria, setDischargeCriteria] = useState("");
-  // const [diagnosisCodes, setDiagnosisCodes] = useState("");
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-
-    // const diagnosisCodesArray: Array<Diagnosis["code"]> =
-    //   diagnosisCodes.split(", ");
 
     try {
       await addEntry({
@@ -54,7 +52,6 @@ const HospitalEntryForm = ({
       setSpecialist("");
       setDischargeDate("");
       setDischargeCriteria("");
-      // setDiagnosisCodes("");
       setDiagnosisCodes([]);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -80,51 +77,59 @@ const HospitalEntryForm = ({
   return (
     <div style={{ borderRadius: 16, border: "2px dotted black", padding: 10 }}>
       <h3>New Hospital entry</h3>
-      <form onSubmit={submit}>
-        <div>
-          Description:
-          <input
-            type="text"
-            value={description}
-            onChange={({ target }) => setDescription(target.value)}
-          />
-        </div>
-        <div>
-          Date:
-          <input
-            type="text"
-            value={date}
-            onChange={({ target }) => setDate(target.value)}
-          />
-        </div>
-        <div>
-          Specialist:
-          <input
-            type="text"
-            value={specialist}
-            onChange={({ target }) => setSpecialist(target.value)}
-          />
-        </div>
+      <form
+        onSubmit={submit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <TextField
+          label="Description"
+          size="small"
+          required
+          value={description}
+          onChange={({ target }) => setDescription(target.value)}
+        />
 
-        <div>
-          Discharge date:
-          <input
-            type="text"
-            value={dischargeDate}
-            onChange={({ target }) => setDischargeDate(target.value)}
-          />
-        </div>
+        <TextField
+          label="Date"
+          size="small"
+          type="date"
+          required
+          InputLabelProps={{ shrink: true }}
+          value={date}
+          onChange={({ target }) => setDate(target.value)}
+        />
 
-        <div>
-          Discharge criteria:
-          <input
-            type="text"
-            value={dischargeCriteria}
-            onChange={({ target }) => setDischargeCriteria(target.value)}
-          />
-        </div>
+        <TextField
+          label="Specialist"
+          size="small"
+          required
+          value={specialist}
+          onChange={({ target }) => setSpecialist(target.value)}
+        />
 
-        <FormControl sx={{ m: 1, width: 300 }}>
+        <TextField
+          label="Discharge date"
+          size="small"
+          type="date"
+          required
+          InputLabelProps={{ shrink: true }}
+          value={dischargeDate}
+          onChange={({ target }) => setDischargeDate(target.value)}
+        />
+
+        <TextField
+          label="Discharge criteria"
+          size="small"
+          required
+          value={dischargeCriteria}
+          onChange={({ target }) => setDischargeCriteria(target.value)}
+        />
+
+        <FormControl size="small">
           <InputLabel id="multiple-diagnosisCodes-label">
             Diagnosis Codes
           </InputLabel>
@@ -147,7 +152,9 @@ const HospitalEntryForm = ({
             ))}
           </Select>
         </FormControl>
-        <button type="submit">Add</button>
+        <Button variant="contained" type="submit">
+          Add
+        </Button>
       </form>
     </div>
   );

@@ -7,6 +7,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 function getStyles(name: string, selectedDiagnosisCodes: string[]) {
   return {
@@ -25,15 +27,12 @@ const OccupationalHealthcareEntryForm = ({
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [employerName, setEmployerName] = useState("");
-  // const [diagnosisCodes, setDiagnosisCodes] = useState("");
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [sickLeaveStartDate, setsickLeaveStartDate] = useState("");
   const [sickLeaveEndDate, setSickLeaveEndDate] = useState("");
 
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    // const diagnosisCodesArray: Array<Diagnosis["code"]> =
-    //   diagnosisCodes.split(", ");
 
     try {
       if (sickLeaveStartDate !== "" || sickLeaveEndDate !== "") {
@@ -65,7 +64,7 @@ const OccupationalHealthcareEntryForm = ({
       setDate("");
       setSpecialist("");
       setEmployerName("");
-      // setDiagnosisCodes("");
+      setDiagnosisCodes([]);
       setsickLeaveStartDate("");
       setSickLeaveEndDate("");
     } catch (error: unknown) {
@@ -92,60 +91,67 @@ const OccupationalHealthcareEntryForm = ({
   return (
     <div style={{ borderRadius: 16, border: "2px dotted black", padding: 10 }}>
       <h3>New OccupationalHealthcare entry</h3>
-      <form onSubmit={submit}>
-        <div>
-          Description:
-          <input
-            type="text"
-            value={description}
-            onChange={({ target }) => setDescription(target.value)}
-          />
-        </div>
-        <div>
-          Date:
-          <input
-            type="text"
-            value={date}
-            onChange={({ target }) => setDate(target.value)}
-          />
-        </div>
-        <div>
-          Specialist:
-          <input
-            type="text"
-            value={specialist}
-            onChange={({ target }) => setSpecialist(target.value)}
-          />
-        </div>
+      <form
+        onSubmit={submit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <TextField
+          label="Description"
+          size="small"
+          required
+          value={description}
+          onChange={({ target }) => setDescription(target.value)}
+        />
 
-        <div>
-          Employer name:
-          <input
-            type="text"
-            value={employerName}
-            onChange={({ target }) => setEmployerName(target.value)}
-          />
-        </div>
+        <TextField
+          label="Date"
+          size="small"
+          type="date"
+          required
+          InputLabelProps={{ shrink: true }}
+          value={date}
+          onChange={({ target }) => setDate(target.value)}
+        />
 
-        <div>
-          Sick leave start date:
-          <input
-            type="text"
-            value={sickLeaveStartDate}
-            onChange={({ target }) => setsickLeaveStartDate(target.value)}
-          />
-        </div>
+        <TextField
+          label="Specialist"
+          size="small"
+          required
+          value={specialist}
+          onChange={({ target }) => setSpecialist(target.value)}
+        />
 
-        <div>
-          Sick leave end date:
-          <input
-            type="text"
-            value={sickLeaveEndDate}
-            onChange={({ target }) => setSickLeaveEndDate(target.value)}
-          />
-        </div>
+        <TextField
+          label="Employer name"
+          size="small"
+          required
+          value={employerName}
+          onChange={({ target }) => setEmployerName(target.value)}
+        />
 
-        <FormControl sx={{ m: 1, width: 300 }}>
+        <TextField
+          label="Sick leave start date"
+          size="small"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={sickLeaveStartDate}
+          onChange={({ target }) => setsickLeaveStartDate(target.value)}
+        />
+
+        <TextField
+          label="Sick leave end date"
+          size="small"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={sickLeaveEndDate}
+          onChange={({ target }) => setSickLeaveEndDate(target.value)}
+        />
+
+        <FormControl size="small">
           <InputLabel id="multiple-diagnosisCodes-label">
             Diagnosis Codes
           </InputLabel>
@@ -168,7 +174,9 @@ const OccupationalHealthcareEntryForm = ({
             ))}
           </Select>
         </FormControl>
-        <button type="submit">Add</button>
+        <Button variant="contained" type="submit">
+          Add
+        </Button>
       </form>
     </div>
   );

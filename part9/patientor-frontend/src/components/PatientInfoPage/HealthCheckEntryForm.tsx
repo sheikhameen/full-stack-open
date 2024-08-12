@@ -7,6 +7,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 function getStyles(name: string, selectedDiagnosisCodes: string[]) {
   return {
@@ -25,14 +27,12 @@ const HealthCheckEntryForm = ({
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [healthCheckRating, setHealthCheckRating] = useState("");
-  // const [diagnosisCodes, setDiagnosisCodes] = useState("");
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     const rating: HealthCheckRating = parseInt(healthCheckRating);
-    // const diagnosisCodesArray: Array<Diagnosis["code"]> = diagnosisCodes.split(", ");
 
     try {
       await addEntry({
@@ -49,7 +49,6 @@ const HealthCheckEntryForm = ({
       setDate("");
       setSpecialist("");
       setHealthCheckRating("");
-      // setDiagnosisCodes("");
       setDiagnosisCodes([]);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -73,44 +72,59 @@ const HealthCheckEntryForm = ({
   };
 
   return (
-    <div style={{ borderRadius: 16, border: "2px dotted black", padding: 10 }}>
+    <div
+      style={{
+        borderRadius: 16,
+        border: "2px dotted black",
+        padding: 10,
+      }}
+    >
       <h3>New HealthCheck entry</h3>
-      <form onSubmit={submit}>
-        <div>
-          Description:
-          <input
-            type="text"
-            value={description}
-            onChange={({ target }) => setDescription(target.value)}
-          />
-        </div>
+      <form
+        onSubmit={submit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <TextField
+          label="Description"
+          size="small"
+          required
+          value={description}
+          onChange={({ target }) => setDescription(target.value)}
+        />
 
-        <div>
-          Date:
-          <input
-            type="text"
-            value={date}
-            onChange={({ target }) => setDate(target.value)}
-          />
-        </div>
-        <div>
-          Specialist:
-          <input
-            type="text"
-            value={specialist}
-            onChange={({ target }) => setSpecialist(target.value)}
-          />
-        </div>
-        <div>
-          Health Check Rating:
-          <input
-            type="text"
-            value={healthCheckRating}
-            onChange={({ target }) => setHealthCheckRating(target.value)}
-          />
-        </div>
+        <TextField
+          label="Date"
+          size="small"
+          type="date"
+          required
+          InputLabelProps={{ shrink: true }}
+          value={date}
+          onChange={({ target }) => setDate(target.value)}
+        />
 
-        <FormControl sx={{ m: 1, width: 300 }}>
+        <TextField
+          label="Specialist"
+          size="small"
+          required
+          value={specialist}
+          onChange={({ target }) => setSpecialist(target.value)}
+        />
+
+        <TextField
+          label="Health Check Rating"
+          type="number"
+          size="small"
+          required
+          InputLabelProps={{ shrink: healthCheckRating !== "" || false }}
+          value={healthCheckRating}
+          onChange={({ target }) => setHealthCheckRating(target.value)}
+        />
+
+        <FormControl size="small">
           <InputLabel id="multiple-diagnosisCodes-label">
             Diagnosis Codes
           </InputLabel>
@@ -133,8 +147,9 @@ const HealthCheckEntryForm = ({
             ))}
           </Select>
         </FormControl>
-
-        <button type="submit">Add</button>
+        <Button variant="contained" type="submit">
+          Add
+        </Button>
       </form>
     </div>
   );
