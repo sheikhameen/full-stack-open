@@ -55,51 +55,18 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
       <p>ssn: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
       <div style={{ display: "flex", height: "40px" }}>
-        {/* <button
-          style={{
-            borderRadius: "10px 10px 0 0",
-            backgroundColor: "#0277bd",
-            borderWidth: 1,
-            color: "white",
-          }}
-          onClick={() => setCurrentEntryForm("HealthCheck")}
-        >
-          Show Healthcheck Entry form
-        </button> */}
         <Button
           variant="contained"
           onClick={() => setCurrentEntryForm("HealthCheck")}
         >
           Healthcheck Entry form
         </Button>
-        {/* <button
-          style={{
-            borderRadius: "10px 10px 0 0",
-            backgroundColor: "#0277bd",
-            borderWidth: 1,
-            color: "white",
-          }}
-          onClick={() => setCurrentEntryForm("Hospital")}
-        >
-          Show Hospital Entry form
-        </button> */}
         <Button
           variant="contained"
           onClick={() => setCurrentEntryForm("Hospital")}
         >
           Hospital Entry form
         </Button>
-        {/* <button
-          style={{
-            borderRadius: "10px 10px 0 0",
-            backgroundColor: "#0277bd",
-            borderWidth: 1,
-            color: "white",
-          }}
-          onClick={() => setCurrentEntryForm("OccupationalHealthcare")}
-        >
-          Show Occupational Healthcare Entry form
-        </button> */}
         <Button
           variant="contained"
           onClick={() => setCurrentEntryForm("OccupationalHealthcare")}
@@ -116,19 +83,6 @@ const PatientInfoPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
         >
           <Close />
         </Button>
-        {/* <button
-          style={{
-            display: currentEntryForm ? "inline-block" : "none",
-
-            borderRadius: "10px",
-            backgroundColor: "#ef5350",
-            borderWidth: 0,
-            color: "white",
-          }}
-          onClick={() => setCurrentEntryForm(null)}
-        >
-          <Close />
-        </button> */}
       </div>
       {currentEntryForm === "HealthCheck" && (
         <HealthCheckEntryForm
