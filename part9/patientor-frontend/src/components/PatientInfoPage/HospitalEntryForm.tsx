@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Diagnosis, EntryWithoutId, HealthCheckRating } from "../../types";
+import { Diagnosis, EntryWithoutId } from "../../types";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const EntryForm = ({
+const HospitalEntryForm = ({
   addEntry,
 }: {
   addEntry: (obj: EntryWithoutId) => Promise<void>;
@@ -11,32 +11,35 @@ const EntryForm = ({
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
-  const [healthCheckRating, setHealthCheckRating] = useState("");
+  const [dischargeDate, setDischargeDate] = useState("");
+  const [dischargeCriteria, setDischargeCriteria] = useState("");
   const [diagnosisCodes, setDiagnosisCodes] = useState("");
 
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const rating: HealthCheckRating = parseInt(healthCheckRating);
     const diagnosisCodesArray: Array<Diagnosis["code"]> =
       diagnosisCodes.split(", ");
 
     try {
       await addEntry({
-        type: "HealthCheck",
+        type: "Hospital",
         date,
         description,
         specialist,
-        healthCheckRating: rating,
         diagnosisCodes: diagnosisCodesArray,
+        discharge: {
+          date: dischargeDate,
+          criteria: dischargeCriteria,
+        },
       });
 
       toast.success("Entry added succesfully");
       setDescription("");
       setDate("");
       setSpecialist("");
-      setSpecialist("");
-      setHealthCheckRating("");
+      setDischargeDate("");
+      setDischargeCriteria("");
       setDiagnosisCodes("");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -49,7 +52,7 @@ const EntryForm = ({
 
   return (
     <div style={{ borderRadius: 16, border: "2px dotted black", padding: 10 }}>
-      <h3>New HealthCheck entry</h3>
+      <h3>New Hospital entry</h3>
       <form onSubmit={submit}>
         <div>
           Description:
@@ -75,14 +78,25 @@ const EntryForm = ({
             onChange={({ target }) => setSpecialist(target.value)}
           />
         </div>
+
         <div>
-          Health Check Rating:
+          Discharge date:
           <input
             type="text"
-            value={healthCheckRating}
-            onChange={({ target }) => setHealthCheckRating(target.value)}
+            value={dischargeDate}
+            onChange={({ target }) => setDischargeDate(target.value)}
           />
         </div>
+
+        <div>
+          Discharge criteria:
+          <input
+            type="text"
+            value={dischargeCriteria}
+            onChange={({ target }) => setDischargeCriteria(target.value)}
+          />
+        </div>
+
         <div>
           Diagnosis Codes:
           <input
@@ -97,4 +111,4 @@ const EntryForm = ({
   );
 };
 
-export default EntryForm;
+export default HospitalEntryForm;
