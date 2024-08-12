@@ -6,7 +6,6 @@ import {
   HealthCheckRating,
   HospitalEntry,
   NewPatient,
-  OccupationalHealthcareEntry,
 } from "./types";
 
 const assertNever = (value: never): never => {
@@ -101,21 +100,6 @@ const isDischarge = (obj: object): obj is HospitalEntry["discharge"] => {
   );
 };
 
-const isSickLeave = (
-  obj: object | undefined
-): obj is OccupationalHealthcareEntry["sickLeave"] => {
-  if (typeof obj === "undefined") return false;
-
-  return (
-    "startDate" in obj &&
-    isString(obj.startDate) &&
-    isDate(obj.startDate) &&
-    "endDate" in obj &&
-    isString(obj.endDate) &&
-    isDate(obj.endDate)
-  );
-};
-
 const isHealthCheckRating = (value: number): value is HealthCheckRating => {
   return Object.values(HealthCheckRating).includes(value);
 };
@@ -199,15 +183,30 @@ export const toNewEntry = (body: unknown): EntryWithoutId => {
       if (
         "sickLeave" in body &&
         body.sickLeave &&
-        typeof body.sickLeave === "object" &&
-        isSickLeave(body.sickLeave)
+        typeof body.sickLeave === "object"
       ) {
-        return {
-          ...commonFields,
-          type: body.type,
-          employerName: body.employerName,
-          sickLeave: body.sickLeave,
-        };
+        if (
+          "startDate" in body.sickLeave &&
+          isString(body.sickLeave.startDate) &&
+          isDate(body.sickLeave.startDate) &&
+          "endDate" in body.sickLeave &&
+          isString(body.sickLeave.endDate) &&
+          isDate(body.sickLeave.endDate)
+        ) {
+          return {
+            ...commonFields,
+            type: body.type,
+            employerName: body.employerName,
+            sickLeave: {
+              startDate: body.sickLeave.startDate,
+              endDate: body.sickLeave.endDate,
+            },
+          };
+        }
+
+        throw new Error(
+          "Incorrect data: sick leave start/end date missing or invalid. Omit both fields to not add a sickLeave field."
+        );
       }
 
       return {
